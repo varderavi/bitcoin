@@ -85,120 +85,81 @@ def fetch_google_news(query):
     return ""
 
 # =========================================================
-# 🪙 BITCOIN પાવરફુલ સેન્ટિમેન્ટ એન્જિન (Risk-Reward 1:2)
+# 🔄 ડાયનેમિક સેન્ટિમેન્ટ અને એન્ટ્રી/એક્ઝિટ એન્જિન (શેર્સ અને ઇન્ડેક્સ બંને માટે)
 # =========================================================
-def get_btc_advanced_report():
-    price, closes, _, prev_close, _, name, d_high, d_low = fetch_live_data("BTC-USD")
-    if not price: return "❌ Bitcoin નો લાઈવ ડેટા મળી શક્યો નહિ."
-    
-    change = round(price - prev_close, 2)
-    p_change = round((change / prev_close) * 100, 2)
-    rsi = calc_rsi(closes)
-    ema9 = calc_ema(closes, 9)
-    ema21 = calc_ema(closes, 21)
-    
-    sentiment = "⚖️ SIDEWAYS / NEUTRAL"
-    action = "👀 કરંટ પ્રાઇઝ ન્યુટ્રલ રેન્જમાં છે, વેટ કરો."
-    
-    if ema9 and ema21 and rsi != "N/A":
-        if price > ema9 and price > ema21 and rsi >= 58:
-            sentiment = "🚀 STRONG BULLISH"
-            action = "🟢 <b>BUY / LONG:</b> ક્રિપ્ટો ભારે તેજીમાં છે, પોઝિશન હોલ્ડ રખાય અથવા બાય કરાય."
-        elif price > ema9 and 50 <= rsi < 58:
-            sentiment = "🟢 MILD BULLISH"
-            action = "📉 <b>BUY ON DIPS:</b> મોમેન્ટમ સારો છે, લોઅર લેવલ પર એન્ટ્રી લઈ શકાય."
-        elif price < ema9 and price < ema21 and rsi <= 42:
-            sentiment = "⚠️ BEARISH PRESSURE"
-            action = "🔴 <b>AVOID / SHORT:</b> સેલિંગ પ્રેશર ચાલુ છે, નવી ખરીદી ટાળવી."
-            
-    # 🔥 Risk-Reward 1:2 Logic (SL = -$50 | Target = +$100)
-    t_btc = round(price + 100, 2)
-    sl_btc = round(price - 50, 2)
-    news = fetch_google_news("Bitcoin Crypto")
-    
-    return f"""🪙 <b>{name} LIVE REPORT & SENTIMENT</b>
-
-💰 <b>Live Price:</b> ${price:,} ({change:+} | {p_change:+}-%)
-🔼 <b>Day High:</b> ${d_high:,} | 🔽 <b>Day Low:</b> ${d_low:,}
-📉 <b>RSI (14):</b> {rsi} | 📈 <b>EMA9:</b> {ema9 or 'N/A'}
-------------------------------------------
-🔥 <b>Intraday Sentiment:</b> {sentiment}
-👉 <b>કરંટ પ્રાઈઝથી શું કરવું?:</b> {action}
-------------------------------------------
-🎯 <b>Logic Target (+$100):</b> ${t_btc:,} [R:R 1:2]
-🛑 <b>Logic Stop Loss (-$50):</b> ${sl_btc:,}
-{news}
-⏰ {now_ist().strftime('%H:%M:%S IST')}"""
-
-# =========================================================
-# ⚡ HBL પાવરફુલ સેન્ટિમેન્ટ એન્જિન (Risk-Reward 1:2)
-# =========================================================
-def get_hbl_advanced_report():
-    price, closes, _, prev_close, _, name, d_high, d_low = fetch_live_data("HBLENGINE.NS")
-    if not price: return "❌ HBL નો લાઈવ ડેટા મળી શક્યો નહિ."
-    
-    change = round(price - prev_close, 2)
-    p_change = round((change / prev_close) * 100, 2)
-    rsi = calc_rsi(closes)
-    ema9 = calc_ema(closes, 9)
-    ema21 = calc_ema(closes, 21)
-    
-    sentiment = "⚖️ SIDEWAYS / NEUTRAL"
-    action = "👀 અત્યારે શાંતિ રાખો, કન્ફર્મ બ્રેકઆઉટની વેટ કરો."
-    
-    if ema9 and ema21 and rsi != "N/A":
-        if price > ema9 and price > ema21 and rsi >= 55:
-            sentiment = "🚀 STRONG BULLISH"
-            action = "🟢 <b>BUY / HOLD:</b> કરંટ પ્રાઈઝથી ઇન્ટ્રાડે બાય કરી શકાય અથવા પોઝિશન હોલ્ડ રખાય."
-        elif price > ema9 and 50 <= rsi < 55:
-            sentiment = "🟢 MILD BULLISH"
-            action = "📉 <b>BUY ON DIPS:</b> નાની અન્ડરલાઈંગ મોમેન્ટમ છે, ડીપમાં એડ કરી શકાય."
-        elif price < ema9 and price < ema21 and rsi <= 40:
-            sentiment = "⚠️ BEARISH PRESSURE"
-            action = "🔴 <b>AVOID / SHORT:</b> નવો ટ્રેડ લેવો નહિ, સેલિંગ પ્રેશર વધારે છે."
-            
-    # 🔥 Risk-Reward 1:2 Logic (SL = -₹5 | Target = +₹10)
-    t_intra = round(price + 10, 2)
-    sl_intra = round(price - 5, 2)
-    news = fetch_google_news("HBL Power")
-    
-    return f"""⚡ <b>{name} LIVE REPORT & SENTIMENT</b>
-
-💰 <b>Live Price:</b> ₹{price} ({change:+} | {p_change:+}-%)
-🔼 <b>Day High:</b> ₹{d_high} | 🔽 <b>Day Low:</b> ₹{d_low}
-📉 <b>RSI (14):</b> {rsi} | 📈 <b>EMA9:</b> {ema9 or 'N/A'}
-------------------------------------------
-🔥 <b>Intraday Sentiment:</b> {sentiment}
-👉 <b>કરંટ પ્રાઈઝથી શું કરવું?:</b> {action}
-------------------------------------------
-🎯 <b>Logic Target (+₹10):</b> ₹{t_intra} [R:R 1:2]
-🛑 <b>Logic Stop Loss (-₹5):</b> ₹{sl_intra}
-{news}
-⏰ {now_ist().strftime('%H:%M:%S IST')}"""
-
-def get_report(symbol, is_crypto=False):
-    if symbol == "HBLENGINE.NS": return get_hbl_advanced_report()
-    if symbol == "BTC-USD": return get_btc_advanced_report()
-        
+def generate_advanced_report(symbol, is_crypto=False):
     price, closes, _, prev_close, _, name, d_high, d_low = fetch_live_data(symbol)
     if not price: return f"❌ '{symbol}' નો લાઈવ ડેટા મળી શક્યો નહિ."
+    
+    rsi = calc_rsi(closes)
+    ema9 = calc_ema(closes, 9)
+    ema21 = calc_ema(closes, 21)
     
     change = round(price - prev_close, 2)
     p_change = round((change / prev_close) * 100, 2)
     sign = "$" if is_crypto else "₹"
-    emoji = "🟢📈" if change >= 0 else "🔴📉"
     
-    news = fetch_google_news(name)
+    # ડિફોલ્ટ સેટિંગ્સ
+    sentiment = "⚖️ SIDEWAYS / NEUTRAL"
+    action = "👀 માર્કેટ અત્યારે કન્ફ્યુઝન ઝોનમાં છે, શાંતિ રાખો અને વેટ કરો."
+    
+    # ડાયનેમિક રેન્જ બફર પકડવું (ઇન્ડેક્સ માટે મોટો બફર અને શેર માટે નાનો)
+    buffer = 20 if "NIFTY" in name or "SENSEX" in name else (30 if is_crypto else 1.5)
+    buy_above = round(max(ema9 or price, d_high) + buffer, 2)
+    entry_logic_text = f"💡 <b>SUGGESTED ENTRY POINT:</b>\n🚀 <b>Buy Breakout:</b> {sign}{buy_above:,} ની ઉપર મજબૂત ગ્રીન કેન્ડલ ક્લોઝ થાય તો જ નવો ટ્રેડ લેવો."
+    
+    # 🧠 ટ્રેન્ડ અને રિસ્ક-રેવોર્ડ 1:2 કેલ્ક્યુલેશન
+    if ema9 and ema21 and rsi != "N/A":
+        # ૧. તેજીનો ટ્રેન્ડ (Bullish)
+        if price > ema9 and price > ema21 and rsi >= 55:
+            sentiment = "🚀 STRONG BULLISH"
+            action = f"🟢 <b>BUY / HOLD:</b> આખા માર્કેટમાં જબરદસ્ત તેજીનો માહોલ છે. પોઝિશન હોલ્ડ રાખવી અથવા કરંટ ભાવથી એન્ટ્રી કરી શકાય."
+            t_val = 100 if is_crypto else (150 if "BANK" in name else (80 if "NIFTY" in name or "SENSEX" in name else 10))
+            sl_val = 50 if is_crypto else (75 if "BANK" in name else (40 if "NIFTY" in name or "SENSEX" in name else 5))
+            entry_logic_text = f"🎯 <b>Logic Target (+{sign}{t_val}):</b> {sign}{round(price+t_val,2):,} [R:R 1:2]\n🛑 <b>Logic Stop Loss (-{sign}{sl_val}):</b> {sign}{round(price-sl_val,2):,}"
+            
+        elif price > ema9 and 50 <= rsi < 55:
+            sentiment = "🟢 MILD BULLISH"
+            action = f" odds <b>BUY ON DIPS:</b> મોમેન્ટમ પોઝિટિવ તરફ જઈ રહ્યું છે. નાના ડીપ પર એડ કરી શકાય."
+            t_val = 100 if is_crypto else (150 if "BANK" in name else (80 if "NIFTY" in name or "SENSEX" in name else 10))
+            sl_val = 50 if is_crypto else (75 if "BANK" in name else (40 if "NIFTY" in name or "SENSEX" in name else 5))
+            entry_logic_text = f"🎯 <b>Logic Target (+{sign}{t_val}):</b> {sign}{round(price+t_val,2):,} [R:R 1:2]\n🛑 <b>Logic Stop Loss (-{sign}{sl_val}):</b> {sign}{round(price-sl_val,2):,}"
+            
+        # ૨. મંદીનો ટ્રેન્ડ (Bearish) -> 🔥 હોલ્ડિંગ સેલ સજેશન લોજિક
+        elif price < ema9 and price < ema21 and rsi <= 42:
+            sentiment = "⚠️ BEARISH PRESSURE"
+            
+            # શેર અને ઇન્ડેક્સ બંને માટે કોમન સેલ સજેશન
+            if "NIFTY" in name or "SENSEX" in name:
+                action = f"🔴 <b>AVOID NEW BUY:</b> આખો ઇન્ડેક્સ ભારે મંદીના સકંજામાં છે. નવી કોઈ જ બાયિંગ એન્ટ્રી અત્યારે ભૂલથી પણ ન કરવી.\n\n🛑 <b>HOLDING EXIT ALERT:</b> આખા માર્કેટનો ટ્રેન્ડ નેગેટિવ હોવાથી, જો તમારા પર્સનલ શેર હોલ્ડિંગ્સમાં કડાકો આવતો હોય તો મોટું નુકસાન રોકવા પ્રોફિટ બુક અથવા <b>SELL (Exit)</b> કરવાનું ખાસ સજેશન છે!"
+            else:
+                action = f"🔴 <b>AVOID NEW BUY:</b> આ સ્ક્રિપ્ટમાં ભારે સેલિંગ પ્રેશર છે, નવી ખરીદી ટાળવી.\n\n🛑 <b>HOLDING EXIT ALERT:</b> જો તમારી પાસે આનું હોલ્ડિંગ પડ્યું હોય, તો કેપિટલ બચાવવા કરંટ ભાવથી <b>SELL (Exit)</b> કરવાનું સ્ટ્રોન્ગ સજેશન છે!"
+                
+            t_val = 100 if is_crypto else (150 if "BANK" in name else (80 if "NIFTY" in name or "SENSEX" in name else 10))
+            sl_val = 50 if is_crypto else (75 if "BANK" in name else (40 if "NIFTY" in name or "SENSEX" in name else 5))
+            entry_logic_text = f"🎯 <b>Short Target (-{sign}{t_val}):</b> {sign}{round(price-t_val,2):,} [R:R 1:2]\n🛑 <b>Short Stop Loss (+{sign}{sl_val}):</b> {sign}{round(price+sl_val,2):,}"
+
+    news = fetch_google_news("Bitcoin Crypto" if is_crypto else name)
     expiry_text = get_expiry_alert() if not is_crypto else ""
     if expiry_text: expiry_text = f"\n\n{expiry_text}"
     
-    return f"""{emoji} <b>{name} LIVE REPORT</b>
+    emoji = "🟢📈" if change >= 0 else "🔴📉"
+    
+    return f"""{emoji} <b>{name} LIVE REPORT & SENTIMENT</b>
 
-💰 <b>Live Price:</b> {sign}{price:,}
+💰 <b>Live Price:</b> {sign}{price:,} ({change:+} | {p_change:+}-%)
 🔼 <b>Day High:</b> {sign}{d_high:,} | 🔽 <b>Day Low:</b> {sign}{d_low:,}
-🔄 <b>Today's Change:</b> {change:+} ({p_change:+}%){expiry_text}{news}
+📉 <b>RSI (14):</b> {rsi} | 📈 <b>EMA9:</b> {ema9 or 'N/A'}
+------------------------------------------
+🔥 <b>Intraday Sentiment:</b> {sentiment}
+👉 <b>કરંટ પ્રાઈઝથી શું કરવું?:</b> {action}
+------------------------------------------
+{entry_logic_text}{expiry_text}{news}
 ⏰ {now_ist().strftime('%H:%M:%S IST')}"""
 
+# ============================================
+# TELEGRAM UI & INTERACTIONS
+# ============================================
 def send_telegram_msg(text, reply_markup=None):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     payload = {"chat_id": CHAT_ID, "text": text, "parse_mode": "HTML"}
@@ -214,18 +175,18 @@ def send_main_menu():
             [{"text": "🔥 MIDCAP 100", "callback_data": "m_midcap"}, {"text": "🔍 Search Stock", "callback_data": "m_search"}]
         ]
     }
-    send_telegram_msg("👋 <b>નમસ્તે રવિ! (Market Master Panel)</b>\n\nનવો Risk-Reward 1:2 રેશિયો સેટ થઈ ગયો છે! ડેટા જોવા માટે નીચે ટેબ પર ક્લિક કરો:", reply_markup=markup)
+    send_telegram_msg("👋 <b>નમસ્તે રવિ! (Market Master Panel)</b>\n\nબધા જ ઇન્ડેક્સ અને શેર્સમાં હવે સેન્ટિમેન્ટ, પ્રાઈઝ રેન્જ અને હોલ્ડિંગ સેલિંગ એલર્ટ ૧૦૦% જોડી દીધું છે. નીચે ક્લિક કરો:", reply_markup=markup)
 
 def handle_callback(callback_id, data):
     global user_status
     text = ""
-    if data == "m_hbl": text = get_report("HBLENGINE.NS")
-    elif data == "m_btc": text = get_report("BTC-USD", is_crypto=True)
-    elif data == "m_nifty": text = get_report("^NSEI")
-    elif data == "m_bnifty": text = get_report("^NSEBANK")
-    elif data == "m_sensex": text = get_report("^BSESN")
-    elif data == "m_next50": text = get_report("^NSE91")
-    elif data == "m_midcap": text = get_report("^NSMIDCP")
+    if data == "m_hbl": text = generate_advanced_report("HBLENGINE.NS")
+    elif data == "m_btc": text = generate_advanced_report("BTC-USD", is_crypto=True)
+    elif data == "m_nifty": text = generate_advanced_report("^NSEI")
+    elif data == "m_bnifty": text = generate_advanced_report("^NSEBANK")
+    elif data == "m_sensex": text = generate_advanced_report("^BSESN")
+    elif data == "m_next50": text = generate_advanced_report("^NSE91")
+    elif data == "m_midcap": text = generate_advanced_report("^NSMIDCP")
     elif data == "m_search":
         user_status[CHAT_ID] = "WAITING_FOR_SEARCH"
         text = "🔍 <b>Script Search Activated:</b>\n\nકૃપા કરીને નામ મોકલો:"
@@ -241,14 +202,14 @@ def handle_search_text(user_text):
         "TCS": "TCS.NS", "SBI": "SBIN.NS", "HDFC": "HDFCBANK.NS"
     }
     symbol = mapping.get(query, f"{query}.NS")
-    text = get_report(symbol)
+    text = generate_advanced_report(symbol)
     send_telegram_msg(text)
     user_status[CHAT_ID] = None 
 
 # ============================================
 # MAIN LOOP
 # ============================================
-print("Master engine with 1:2 Risk-Reward Active...")
+print("Master engine with FULL Index & Stock Down-Trend Logic Active...")
 offset = 0
 start_time = time.time()
 
