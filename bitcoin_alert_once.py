@@ -6,8 +6,8 @@ from datetime import datetime
 # ============================================
 # SETTINGS
 # ============================================
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
-CHAT_ID   = os.environ.get("CHAT_ID", "")
+BOT_TOKEN = os.environ.get("8874026729:AAEgzZr0UslgaKGdPiUjZMONNuFCKL-pqsY", "")
+CHAT_ID   = os.environ.get("1358803794", "")
 SYMBOL    = "BTC-USD"  # Yahoo Finance Bitcoin
 QTY       = 1
 MOVE      = 50
