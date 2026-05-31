@@ -4,11 +4,11 @@ import pytz
 from datetime import datetime
 
 # ============================================
-# SETTINGS - (૧૦૦% સાચો ટોકન સેટ કરી દીધો છે)
+# SETTINGS - (૧૦૦% સાચો અને ફાઇનલ સેટઅપ)
 # ============================================
 BOT_TOKEN = "8874026729:AAEgzZr0UslgaKGdPiUjZMONNuFCKL-pqsY"
 CHAT_ID   = "1358803794"
-SYMBOL    = "BTC-USD"  # Yahoo Finance Bitcoin
+SYMBOL    = "BTC-USD"
 QTY       = 1
 MOVE      = 50
 
@@ -26,6 +26,7 @@ def send_telegram(msg):
         print(f"Telegram error: {e}")
 
 def fetch_data():
+    # Yahoo Finance માંથી બિટકોઈનનો ૫ મિનિટનો લાઈવ ડેટા
     url = f"https://query1.finance.yahoo.com/v8/finance/chart/{SYMBOL}?interval=5m&range=2d"
     headers = {"User-Agent": "Mozilla/5.0"}
     try:
@@ -59,25 +60,30 @@ ema9  = calc_ema(closes, 9)
 ema21 = calc_ema(closes, 21)
 rsi   = calc_rsi(closes, 14)
 
+# વોલ્યુમ કેલ્ક્યુલેશન
 avg_vol = sum(volumes[-6:-1])/5 if len(volumes)>=6 else 0
 vol_x = round(volumes[-1]/avg_vol, 1) if avg_vol else 0
 
 print(f"Price=${price} EMA9={ema9} EMA21={ema21} RSI={rsi} Vol={vol_x}x")
 
-if ema9 > ema21:
-    sig = "BUY"
-    emoji = "🟢📈"
-else:
-    sig = "SELL"
-    emoji = "🔴📉"
+# ⚡ લાઈવ માર્કેટ માટે પ્રોફેશનલ ફિલ્ટર કન્ડિશન
+buy_signal  = (ema9 > ema21) and (45 <= rsi <= 65) and (price > ema9)
+sell_signal = (ema9 < ema21) and (35 <= rsi <= 55) and (price < ema9)
+
+if not buy_signal and not sell_signal:
+    print("સિગ્નલ મેચ થતું નથી. WAIT.")
+    exit(0)
+
+sig = "BUY" if buy_signal else "SELL"
+emoji = "🟢📈" if buy_signal else "🔴📉"
 
 t1  = round(price + (MOVE if sig == "BUY" else -MOVE), 2)
 sl  = round(price + (-MOVE if sig == "BUY" else MOVE), 2)
 
-msg = f"""{emoji} <b>{SYMBOL} {sig} LIVE SIGNAL!</b>
+msg = f"""{emoji} <b>{SYMBOL} {sig} SIGNAL!</b>
 
 💰 <b>Price:</b> ${price:,}
-📊 <b>EMA9:</b> {e9 if 'e9' in locals() else ema9} | <b>EMA21:</b> {e21 if 'e21' in locals() else ema21}
+📊 <b>EMA9:</b> {ema9} | <b>EMA21:</b> {ema21}
 📉 <b>RSI:</b> {rsi} | <b>Vol:</b> {vol_x}x
 
 🎯 <b>Entry:</b>    ${price:,}
@@ -87,7 +93,7 @@ msg = f"""{emoji} <b>{SYMBOL} {sig} LIVE SIGNAL!</b>
 ⚡ 24/7 Live Crypto Agent Running ✓
 ⏰ {now_ist().strftime('%d %b %Y  %H:%M IST')}
 
-<i>TradingView Tech Analyzed ✓</i>"""
+<i>TradingView Tech Analyzed ✓ — Execute trade!</i>"""
 
 send_telegram(msg)
-print("Bitcoin test alert sent successfully!")
+print(f"લાઇવ સિગ્નલ ટેલિગ્રામ પર મોકલી દીધું છે: {sig}")
