@@ -50,7 +50,6 @@ def fetch_live_data(symbol, interval="5m", timeframe_range="2d", include_prepost
         elif symbol == "^NSE91": name = "NIFTY NEXT 50"
         elif symbol == "HBLENGINE.NS": name = "HBL POWER"
         
-        # આજનો દિવસનો હાઇ અને લો (Price Range)
         day_high = round(highs[-1], 2) if highs else price
         day_low = round(lows[-1], 2) if lows else price
         
@@ -85,9 +84,6 @@ def fetch_google_news(query):
         pass
     return ""
 
-# =========================================================
-# 🪙 BITCOIN પાવરફુલ સેન્ટિમેન્ટ એન્જિન
-# =========================================================
 def get_btc_advanced_report():
     price, closes, _, prev_close, _, name, d_high, d_low = fetch_live_data("BTC-USD")
     if not price: return "❌ Bitcoin નો લાઈવ ડેટા મળી શક્યો નહિ."
@@ -129,9 +125,6 @@ def get_btc_advanced_report():
 🛑 <b>Logic Stop Loss (-$50):</b> ${sl_btc:,}{news}
 ⏰ {now_ist().strftime('%H:%M:%S IST')}"""
 
-# =========================================================
-# ⚡ HBL પાવરફુલ સેન્ટિમેન્ટ એન્જિન
-# =========================================================
 def get_hbl_advanced_report():
     price, closes, _, prev_close, _, name, d_high, d_low = fetch_live_data("HBLENGINE.NS")
     if not price: return "❌ HBL નો લાઈવ ડેટા મળી શક્યો નહિ."
@@ -146,6 +139,7 @@ def get_hbl_advanced_report():
     action = "👀 અત્યારે શાંતિ રાખો, કન્ફર્મ બ્રેકઆઉટની વેટ કરો."
     
     if ema9 and ema21 and rsi != "N/A":
+        # 🔥 અહીં જે ભૂલ હતી તે બરાબર સુધારી લીધી છે
         if price > ema9 and price > ema21 and rsi >= 55:
             sentiment = "🚀 STRONG BULLISH"
             action = "🟢 <b>BUY / HOLD:</b> કરંટ પ્રાઈઝથી ઇન્ટ્રાડે બાય કરી શકાય અથવા પોઝિશન હોલ્ડ રખાય."
@@ -196,9 +190,6 @@ def get_report(symbol, is_crypto=False):
 🔄 <b>Today's Change:</b> {change:+} ({p_change:+}%){expiry_text}{news}
 ⏰ {now_ist().strftime('%H:%M:%S IST')}"""
 
-# ============================================
-# TELEGRAM UI & INTERACTIONS
-# ============================================
 def send_telegram_msg(text, reply_markup=None):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     payload = {"chat_id": CHAT_ID, "text": text, "parse_mode": "HTML"}
@@ -248,7 +239,7 @@ def handle_search_text(user_text):
 # ============================================
 # MAIN LOOP
 # ============================================
-print("Master engine with BTC + HBL Sentiment and Price Range Active...")
+print("Master engine restarted successfully...")
 offset = 0
 start_time = time.time()
 
