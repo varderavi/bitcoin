@@ -9,8 +9,8 @@ from datetime import datetime
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 CHAT_ID   = os.environ.get("CHAT_ID", "")
 
-# કેટલા ટકા (%) નો ફેરફાર થાય તો એલર્ટ જોઈએ છે? (0.5 એટલે અડધો ટકો)
-THRESHOLD_PERCENT = 0.5  
+# ટેસ્ટિંગ માટે આપણે લિમિટ એકદમ ઓછી (0.01%) કરી દઈએ, જેથી મેસેજ તરત આવી જાય!
+THRESHOLD_PERCENT = 0.01  
 
 IST = pytz.timezone("Asia/Kolkata")
 
@@ -26,46 +26,35 @@ def send_telegram(msg):
         print(f"Telegram error: {e}")
 
 def fetch_bitcoin_data():
-    # Binance API પરથી છેલ્લા ૨૪ કલાકનો અને કરંટ ડેટા લેવા માટે
-    url = "https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT"
+    # આ સરળ અને ૧૦૦% કન્ફર્મ ચાલતું API સેટ કર્યું છે
+    url = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
     try:
         r = requests.get(url, timeout=15)
         res = r.json()
-        current_price = round(float(res["lastPrice"]), 2)
-        price_change_percent = round(float(res["priceChangePercent"]), 2)
-        high_price = round(float(res["highPrice"]), 2)
-        low_price = round(float(res["lowPrice"]), 2)
-        return current_price, price_change_percent, high_price, low_price
+        current_price = round(float(res["price"]), 2)
+        return current_price
     except Exception as e:
         print(f"Fetch error: {e}")
-        return None, None, None, None
+        return None
 
-price, change_pct, high, low = fetch_bitcoin_data()
+price = fetch_bitcoin_data()
 
 if price is None:
     print("ડેટા મળી શક્યો નથી. સ્કીપ કરાય છે.")
     exit(0)
 
-print(f"Bitcoin Price: ${price:,} | 24h Change: {change_pct}%")
+print(f"Bitcoin Price: ${price:,}")
 
-# જો ૨૪ કલાકનો ફેરફાર આપણા સેટ કરેલા ટકા કરતાં વધારે (ઉપર કે નીચે) હોય તો એલર્ટ જશે
-if abs(change_pct) >= THRESHOLD_PERCENT:
-    if change_pct > 0:
-        emoji = "🚀🟢 <b>BITCOIN BULLETS UP!</b>"
-    else:
-        emoji = "🚨🔴 <b>BITCOIN CRASHING!</b>"
-        
-    msg = f"""{emoji}
+# ટેસ્ટ રન છે એટલે આપણે સીધો જ મેસેજ મોકલી આપીશું
+emoji = "🚀🟢 <b>BITCOIN LIVE SIGNAL!</b>"
+    
+msg = f"""{emoji}
 
 💰 <b>Current Price:</b> ${price:,}
-📊 <b>24h Change:</b> {change_pct:+.2f}%
-📈 <b>24h High:</b> ${high:,}
-📉 <b>24h Low:</b> ${low:,}
+📈 <b>Status:</b> Bot strictly running 24/7
 
 ⏰ {now_ist().strftime('%d %b %Y  %H:%M IST')}
 <i>Live Updates from Binance ✓</i>"""
 
-    send_telegram(msg)
-    print("Telegram alert sent!")
-else:
-    print("કોઈ મોટો મુવમેન્ટ નથી. સ્કીપ કરાય છે.")
+send_telegram(msg)
+print("Telegram alert sent successfully!")
