@@ -11,7 +11,6 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 # ============================================
 # CONFIGURATION & DICTIONARY
 # ============================================
-# 🎯 તમારો નવો સેફ બોટ ટોકન અહીં સેટ કરી દીધો છે
 BOT_TOKEN = "8907497350:AAHSJtlYPpkW0FAobFDx9wgNcl6MO2jngU0"
 CHAT_ID   = "1358803794"
 
@@ -474,9 +473,11 @@ while True:
                     handle_callback(cb_obj["id"], cb_obj["data"], dynamic_chat_id)
                     
         current_time = time.time()
+        
+        # 🎯 સુધારો: હવે લૂપ અટકશે નહીં, માર્કેટ ચાલુ હોય કે બંધ, ટેલિગ્રામ રિસ્પોન્સ નોન-સ્ટોપ ફરશે!
         if current_time - last_auto_check >= 5:
-            if is_market_hours(): check_and_send_auto_alerts()
-            else: fetch_live_data("BTC-USD", "5m")
+            if is_market_hours(): 
+                check_and_send_auto_alerts()
             last_auto_check = current_time
     except:
         time.sleep(2)
